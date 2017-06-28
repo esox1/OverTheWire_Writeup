@@ -1,0 +1,634 @@
+cat readme
+boJ9jbbUNNfktd78OOpsqOltutMc3MY1
+bandit0
+-------------------------------------
+
+cat ./-
+CV1DtqXWVFXTvM2F0k09SHz0YwRINYA9
+bandit1
+------------------------------------
+
+cat ./spaces\ in\ this\ filename
+UmHadQclWmgdLOKQ3YNgjWxGoRMb5luK
+bandit2
+------------------------------------
+"ls -a" to see ".hidden files/dolders"
+cat inhere/.hidden
+pIwrPrtPN36QITSp3EQaw936yaFoFgAB
+bandit3
+-------------------------------------
+
+cd ./inhere/
+"theres a bunch of file0, file1, etc..with giberrish .except one.
+find . -exec file {} + | grep ASCII #find with exec command file with result subsitute with {} and + to tell find it is the end of cmd
+
+Another way is to use "file" to see type
+file ./*
+
+Output:
+./-file00: data
+./-file01: data
+./-file02: data
+./-file03: data
+./-file04: data
+./-file05: data
+./-file06: data
+./-file07: ASCII text
+./-file08: data
+./-file09: data
+
+cat ./-file07
+we see that -file07 has the passwd
+koReBOKuIDDepwhWk7jZC0RTdopnAYKh
+bandit4
+------------------------------------------
+In this level we get a bunch of folders with a bunch of different files and given conditions:
+human-readable, 1033 bytes in size, not executable
+cd /inhere/
+du -ba | grep 1033
+we read all subdir and get the block(bytes)size and piped with grep to find our 1033 size
+
+cat ./maybehere07/.file2
+DXjZPULLxYr17uwoI01bNLQbtFemEgo7
+
+or
+find . -size 1033c -readable ! executable -exec file {} + | grep ASCII
+
+using find to determine the size 1033 bytes and not executable and tagging file cmd and piping grep with ASCII
+
+bandit5
+-------------------------------------------
+
+This one has the file with passwd located somewhere on the server
+conditions: file is owned by user bandit7, file is in group bandit6, file's size is 33 bytes
+
+find / -type f -group bandit6 -user bandit7 -size 33c
+
+cat /var/lib/dpkg/info/bandit7.password
+
+HKBPTKQnIay4Fw76bEy8PVxKEDQRKTzs
+bandit6->7
+------------------------------------------
+conditon: password is in data.txt next to word "millionth"
+
+cat data.txt | grep millionth
+cvX2JJa4CFALtqS87jk27qwqGhBM9plV
+bandit 7->8
+-------------------------------------------
+condition: password in data.txt in a line that occurs once
+
+sort data.txt | uniq -u
+the sort will sort lines in lexicographically order(it reorders them alpabatically os the matching ones are together) and uniq cmd omits repeated lines and -u flag tell to report uniqe lines
+
+UsvVyFSfZZWbi6wgC7dAFyFuR6jQQUhR
+bandit8->9
+------------------------------------------
+condition: passwd in data.txt in one fo human readable strings, beginning w/ several '=' characters
+
+cat data.txt | grep -a =
+the -a flag in grep process a binary file as if it were a text
+if we check file data.txt we get "data" by using -a flag grep process it as if it were a text file.
+
+z哞��1cF�========== truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk
+so paswd is obvious truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk
+
+Another way is to use command "strings" whicih prints the printable characters sequences that are at least 4 chars long. Its useful for determing the contents of non-text files
+
+strings data.txt | grep ==
+
+========== password
+========== ism
+N$=&
+l/a=L)
+f=C(
+========== truKLdjsbJ5g7yyJ2X2R0o3a5HQJFuLk
+
+bandit9->10
+-------------------------------------------
+Condition: passwd in data.txt which contains base64 encoded data
+base64 is basically a binary datain a sequence of printable chars in plaintext encoded in an ASCII string format
+
+we use base64 command with -d flag to decode it to plain text
+base64 -d data.txt
+The password is IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR
+
+IFukwKGsFW8MOq3IRFqrxE1hxTNEbUPR
+bandit10->11
+--------------------------------------------
+Condition: passwd is stored in data.txt where all lowercase (a-z) and upper case A-Z letters have been rotated by 13 positions
+
+Accoring to Ro13 on wikipedia, A its rotation 13 alpha is N and Z Ro13 is M, so is a is n and z is m using the tr to compare sets
+
+tr 'a-zA-Z' 'n-za-mN-ZA-M'
+using a-z as SET1 and n-za-mN-Za as set 2
+1) a=n --> n-z
+2) z=m --> n-za-m
+3) A=N --> n-za-mN
+4) Z=M --> n-za-mN-ZA-M  (completed)
+
+cat data.txt | tr 'a-zA-Z' 'n-za-mN-ZA-M'
+
+ex: echo "LOVEEGYPT" | tr 'a-zA-Z' 'n-za-mN-ZA-M' = YBIRRTLCG
+The password is 5Te8Y4drgCRfCx8ugdwuEX8KFC6k2EUu
+bandit11->12
+---------------------------------------------
+This one was boring and long
+Condition: passed stored in data.txt which is hexdump of a file that has been reoeadelt compressed. create a directory in /tmp/anyname
+
+mkdir /tmp/eso/
+cat ~/data.txt | xxd -r > ./data
+file data
+"gzip compressed data"
+mv data{,.gz}
+gunzip data.gz
+file data
+"bzip2 compressed data"
+mv data{,.bz2}
+bzip2 -d data.bz2
+file data
+"gzip compressed data"
+mv data{,.gz}
+gunzip data.gz
+file data
+"posix  tar archive"
+tar xvf data
+data5.bin
+file data5.bin
+"tar archive"
+tar xvf data5.bin
+data6.bin
+file data6.bin
+"bzip2 compressed"
+mv data6{.bin,.bz2}
+bzip2 -d data6.bz2
+data6
+file data6
+"tar archive"
+tar xvf data6
+data8.bin
+file data8.bin
+"gzip compressed"
+mv data8{.bin,.gz}
+gunzip data8.gz
+data8
+file data8
+"ASCII text"
+cat data8
+"The password is 8ZjyCRiBWFYkneahHwxCv3wb2a1ORpYL "
+
+bandit12->13
+------------------------------------
+connect to bandit14@localhost using the given privatekey in bandit13
+
+ssh -i ./ssh.key_private bandit14@localhost
+
+bandit13->14
+--------------------------------------------
+where the passwd for level 14 was saved in /etc/bandit_pass/bandit14
+
+cat /above/directory
+
+4wcYUJFw0k0XLShlDzztnTBHiqxU3b3e
+
+bandit14
+
+To get the passwd to level15
+condition: the passwd can be retrieved by sumbitting the passwd of the current lvel to port 30000 on localhost
+
+I had to look this one up
+so you can listen using nc command
+nc localhost 30000
+which didnt work for me but telnet did
+
+telnet localhost 30000
+"trying 127.0.0.1
+connected to localhost
+Escape character is '^]'."
+input the paswd to current level( bandit14)
+The correct passwd for bandit15->16
+BfMYroe26WYalil77FoDi9qh59eK5xNr
+-----------------------------------------------
+
+This level the credentials can be retrieved by submitting the passwrd of the current level to a port 30001 on localhost using ssl encryption
+
+telent localhost 30001
+then entering the passwd to current level
+we get an ERROR 140737354049184:ssl routines ssl3_get_record:wrong version number
+
+if we wanted to testt a webiste by sending a custom hearders, but say websites uses https if we used
+telnet www.example 80
+GET /index.html
+that would be a valid HTTP GET and you would see the servers response headers and response data. but with a ssl webiste that wont work. We use openssl s_client
+
+openssl s_client -connect localhost:30001
+and it's usccessful. I get servers response headers and response data then its waiting to enter the passwd of the current level (bandit15)  but I get
+
+"HEARTBEATING
+ read R BLOCK
+ read:errno=0"
+ according to otw
+ using the -quiet flag wich implies -ign_eof we get our passwd for bandit16
+ cluFn7wTiGryunymYOu4RcffSxQluehd
+
+ bandit 16->17
+ ---------------------------------------------
+ condition we get a rang of porsts that we need to scan to see which ones the server is listening to and test which ones are ssl
+ nmap -p31000-32000 localhost
+ we see that 31046/tcp open
+ 31518/tcp
+ 31691/tcp
+ 31790/tcp
+ 31960/tcp
+
+ we can use echo test | nc -v localhost 31046
+ "test"
+ 31518 = ERROR
+ 31691 = test
+ 31790 = ERROR
+ 31960 = test
+
+ so only 31518 and 31790 are ssl
+ using openssl s_client -connect localhost:31790
+then entering the paswd to current level we get the private key to the next level
+
+-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAvmOkuifmMg6HL2YPIOjon6iWfbp7c3jx34YkYWqUH57SUdyJ
+imZzeyGC0gtZPGujUSxiJSWI/oTqexh+cAMTSMlOJf7+BrJObArnxd9Y7YT2bRPQ
+Ja6Lzb558YW3FZl87ORiO+rW4LCDCNd2lUvLE/GL2GWyuKN0K5iCd5TbtJzEkQTu
+DSt2mcNn4rhAL+JFr56o4T6z8WWAW18BR6yGrMq7Q/kALHYW3OekePQAzL0VUYbW
+JGTi65CxbCnzc/w4+mqQyvmzpWtMAzJTzAzQxNbkR2MBGySxDLrjg0LWN6sK7wNX
+x0YVztz/zbIkPjfkU1jHS+9EbVNj+D1XFOJuaQIDAQABAoIBABagpxpM1aoLWfvD
+KHcj10nqcoBc4oE11aFYQwik7xfW+24pRNuDE6SFthOar69jp5RlLwD1NhPx3iBl
+J9nOM8OJ0VToum43UOS8YxF8WwhXriYGnc1sskbwpXOUDc9uX4+UESzH22P29ovd
+d8WErY0gPxun8pbJLmxkAtWNhpMvfe0050vk9TL5wqbu9AlbssgTcCXkMQnPw9nC
+YNN6DDP2lbcBrvgT9YCNL6C+ZKufD52yOQ9qOkwFTEQpjtF4uNtJom+asvlpmS8A
+vLY9r60wYSvmZhNqBUrj7lyCtXMIu1kkd4w7F77k+DjHoAXyxcUp1DGL51sOmama
++TOWWgECgYEA8JtPxP0GRJ+IQkX262jM3dEIkza8ky5moIwUqYdsx0NxHgRRhORT
+8c8hAuRBb2G82so8vUHk/fur85OEfc9TncnCY2crpoqsghifKLxrLgtT+qDpfZnx
+SatLdt8GfQ85yA7hnWWJ2MxF3NaeSDm75Lsm+tBbAiyc9P2jGRNtMSkCgYEAypHd
+HCctNi/FwjulhttFx/rHYKhLidZDFYeiE/v45bN4yFm8x7R/b0iE7KaszX+Exdvt
+SghaTdcG0Knyw1bpJVyusavPzpaJMjdJ6tcFhVAbAjm7enCIvGCSx+X3l5SiWg0A
+R57hJglezIiVjv3aGwHwvlZvtszK6zV6oXFAu0ECgYAbjo46T4hyP5tJi93V5HDi
+Ttiek7xRVxUl+iU7rWkGAXFpMLFteQEsRr7PJ/lemmEY5eTDAFMLy9FL2m9oQWCg
+R8VdwSk8r9FGLS+9aKcV5PI/WEKlwgXinB3OhYimtiG2Cg5JCqIZFHxD6MjEGOiu
+L8ktHMPvodBwNsSBULpG0QKBgBAplTfC1HOnWiMGOU3KPwYWt0O6CdTkmJOmL8Ni
+blh9elyZ9FsGxsgtRBXRsqXuz7wtsQAgLHxbdLq/ZJQ7YfzOKU4ZxEnabvXnvWkU
+YOdjHdSOoKvDQNWu6ucyLRAWFuISeXw9a/9p7ftpxm0TSgyvmfLF2MIAEwyzRqaM
+77pBAoGAMmjmIJdjp+Ez8duyn3ieo36yrttF5NSsJLAbxFpdlc1gvtGCWW+9Cq0b
+dxviW8+TFVEBl1O4f7HVm6EpTscdDxU+bCXWkfjuRb7Dy9GOtt9JPsX8MBTakzh3
+vBgsyi/sN3RqRBcGU40fOoZyfAMT8s1m/uYv52O6IgeuZ/ujbjY=
+-----END RSA PRIVATE KEY-----
+
+create a directory in /tmp/asd/ and save  the private key in file, name it whatever
+mkdir /tmp/asd/
+echo 'privateKeythatwegot' > private.key
+now change the permission of the file to be only accessible by you otherwise it will be ignored in the next step
+chmod 700 ./private.key
+then we are going to login to bandit17 using the private key
+ssh -i ./private.key bandit17@localhost
+
+SUCCESS !
+once we in bandit17 we can find the passwd for this level in
+cat /etc/bandit_pass_bandit17
+xLYVMN9WE5zQ5vHacb0sZEVqbrp7nBTn
+
+bandit 16->17
+-------------------------------------------------------------------------------------------
+
+In this level we have 2 files, passwords.old nad passwords.new. the password for the next level in passwords.new and is the only line that has been changed b/w pass.old pass.new
+
+vimdiff passwords.old  passwords.new
+it highlights two lines that are diff.
+kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd
+
+OR
+diff passwords.old passwords.new and we get
+42c42
+< BS8bqB1kqkinKJjuxL6k072Qq9NRwQpR
+---
+> kfBf3eYk5BPBRzwjqutbbfE887SVc5Yd
+
+bandit17->18
+-----------------------------------------
+if we ssh bandit18@bandit.labs.overthewire.org
+we get "Byebye !"
+someone has modified the .bashrc to log  you out when you login in with ssh and the password is in readme file in homedirectory
+
+so we need to run command as we login
+ssh bandit18@bandit.labs.overthewire.org -t 'cat ~/readme'
+
+IueksS7Ubh8G3DCwVzrTd8rAVOwq3M5x
+
+bandit 18->19
+---------------------------------------------
+This level to gain access to the next level, we should use the setuid binary file in the ~/. where the passwd for the this level is found in /etc/bandit_passwd/bandit20
+
+to view if a file has setuid use ls -l or stat
+
+(4750/-rwsr-x---)  Uid: (11020/bandit20)   Gid: (11019/bandit19)
+the s in the user permission filed represents the setuid
+
+I had to look this one up as simple and silly it was, (not knowing)
+
+./bandit20-do cat /etc/bandit_passwd/bandit20
+GbKksEFF4yrVs6il55v6gwY5aVje5f0j
+
+bandit 19->20
+---------------------------------------------
+This one requires running ./suconnect which makes connection to localhost on the port you specify as  acommandline arg. it then reads a line of text from the connection and compares it to the passwd in bandit20. if the passwd is correct it transmits the passwd for the next level bandit21.
+
+using nc to run listening on a random port then connect suconnect to that port from another window then suconnect should send back the correct passwd
+
+nc localhost -l 45323
+the -l flag is used to specift that nc should listen to an incoming connection rather than to intiate a connection to a remote host.
+
+in another window ./suconnect 45323
+"Read: GbKksEFF4yrVs6il55v6gwY5aVje5f0j
+password matches, sending next password"
+in the nc window
+"gE269g2h3mw3pwgrj0Ha9Uoqen1c9DGr
+"
+
+I looked up this one too. feeling like an idiot
+bandit 20->21
+---------------------------------------------
+This level there is a program running automatically at regular intervals from cron, look in /etc/corn.d/ for config and see what command is being excuted
+
+cat /etc/cron.d/cronjob_bandit22/
+"* * * * * bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
+" we see that it exec that cmd everyminute
+if we cat into cronjob_bandit22.sh
+"#!/bin/bash
+chmod 644 /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+cat /etc/bandit_pass/bandit22 > /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+"
+if we cat into /etc/bandit_pass/bandit22"we get permission denied"
+lets try to cat into /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv/
+we get our passwd
+
+"Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI
+"
+
+bandit 21->22
+-----------------------------------------------------
+ This level A program is running automatically at regular intervals from cron, the time-based job scheduler. Look in /etc/cron.d/ for the configuration and see what command is being executed.
+
+NOTE: Looking at shell scripts written by other people is a very useful skill. The script for this level is intentionally made easy to read. If you are having problems understanding what it does, try executing it to see the debug information it prints."
+
+if we cat to /etc/cron.d/cronjob_bandit23. We get
+"#!/bin/bash
+
+myname=$(whoami)
+mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
+
+echo "Copying passwordfile /etc/bandit_pass/$myname to /tmp/$mytarget"
+
+cat /etc/bandit_pass/$myname > /tmp/$mytarget
+"
+so whoami=bandit22 which is plugged into the mytarget $myname then the passwdfile is copied to /tmp/$mytarget output file
+
+so if we try to   $(echo I am user bandit22 | md5sum | cut -d ' ' -f 1)
+we get "8169b67bd894ddbb4412f91573b38db3" then cat /tmp/8169b67bd894ddbb4412f91573b38db3  we get "Yk7owGAcWjwMVRwrTesJEwB7WVOiILLI
+" which is the passed to bandit22 .
+
+Now it makes sense , so lets replace bandit22 to bandit23
+
+$(echo I am user bandit23 | md5sum | cut -d ' ' -f 1)
+we get "8ca319486bfbbc3663ea0fbe81326349
+" if we cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+we get the passwd to lvl bandit23 "jc1udXuA1tiHqjIsL8yaapX5XIAI6i0n
+"
+bandit 22->23
+---------------------------------------------
+
+The goal in this level, A program is running automatically at regular intervals from cron, the time-based job scheduler. Look in /etc/cron.d/ for the configuration and see what command is being executed.
+
+NOTE: This level requires you to create your own first shell-script. This is a very big step and you should be proud of yourself when you beat this level!
+
+NOTE 2: Keep in mind that your shell script is removed once executed, so you may want to keep a copy around…
+" NICE so our first script
+
+lets go and check cat /etc/cronjob_bandit24
+"* * * * * bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+"
+so lets chech cat /ust/bin/cronjob_bandit24.sh
+ we create a directory in /tmp/edf/
+ create a script called ./pass and lets
+ cat /etc/bandit_pass/bandit24 > /tmp/password.txt"
+
+ if we ls -l /var/spool/bandit24
+ we see that it has a 777 persmission for bandit24 and bandit23
+ so we create a script in /tmp/edf/pass
+
+ "cp pass /var/spool/bandit24/"
+ dont forget to give password.txt 777 permission otherwise it wont work
+ once pass is executed, checking password.txt we have our lvl 24 passwd
+ UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ
+
+looked it up online again. u idiot
+bandit24->25
+--------------------------------------------
+
+This level theres a running daemon on port 30002 thats will give you the passwd if you enter the previous level passwrd along with corrent pin which ranges from 0000-9999. So we going to have to brute force the pin by trying all combinations. lets write a script
+
+first create a file in /tmp/ebff/loop.shand dont forget to give execute permmission.
+
+my python script
+"
+import socket
+import sys
+#create a TCP/IP socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ #thken we bind() which is used to associate the socket w|430 --------------------------------------------
+ server_address = ('localhost', 30002)
+ print >> sys.stderr, 'starting up on %s port %s' % server_address
+ sock.bind(server_address)
+ try:
+    for i in range(0000,9999)
+        print ("UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ "+ i)
+"
+
+import socket
+import sys
+
+passwd = "UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ"
+bufferSize = 1024
+#create a TCP/IP socket
+serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ #thken we bind() which is used to associate the socket w|430 --------------------------------------------
+serversocket.connect(('localhost', 30002))
+#server_address = ('localhost', 30002)
+#serversocket.listen(9)
+#print >> sys.stderr, 'starting up on %s port %s' % serversocket
+#sock.bind(server_address)
+print "connecting to localhost"
+#for i in range(0000,9999):
+while 1:
+
+    data = serversocket.recv(bufferSize)
+    print data
+    i = 0
+    serversocket.send(i )
+    i=i+1
+    if data.find('The password is | correct') !=-1:
+        print ("received data:", data)
+        break
+   # if not data: break
+   # data = serversocket.recv(bufferSize)
+serversocket.close()
+#    print ("UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ "+ i)
+
+---------------------------------------------------------------TRY script#3
+import socket
+import sys
+
+passwd = "UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ"
+bufferSize = 1024
+#create a TCP/IP socket
+serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ #thken we bind() which is used to associate the socket w|430 --------------------------------------------
+print ("[+] sending: password and pin ...\n")
+serversocket.connect(('localhost', 30002))
+print "connecting to localhost"
+#for i in range(0000,9999):
+while 1:
+
+    data = serversocket.recv(bufferSize)
+    print data
+
+    for i in range(0000,9999):
+        serversocket.send(passwd  + str(i))
+        print (passwd + str(i))
+        if data.find('The password is | correct') !=-1:
+            print ("received data:", data)
+            break
+   # if not data: break
+   # data = serversocket.recv(bufferSize)
+#serversocket.close()
+#    print ("UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ "+ i)
+
+
+import socket
+import sys
+
+passwd = "UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ"
+bufferSize = 1024
+#create a TCP/IP socket
+serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ #thken we bind() which is used to associate the socket w|430 --------------------------------------------
+print ("[+] sending: password and pin ...\n")
+serversocket.connect(('localhost', 30002))
+print "connecting to localhost"
+#for i in range(0000,9999):
+#while 1:
+
+  #  print data
+
+data = serversocket.recv(bufferSize)
+for i in range(0000, 9999):
+    if not data:break
+    serversocket.send("UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ "
++ str(i).zfill(4) + "\n")
+    data = serversocket.recv(bufferSize)
+               #  print data
+        #print (passwd + '   ' +str(i))
+       # print data
+    if 'password ' or 'correct' in data:
+        print (str(i))
+        print data
+  #      if data.find('The password is ' or 'correct'):
+  #          print ("received data:", data)
+            #break
+   # if not data: break
+   # data = serversocket.recv(bufferSize)
+#serversocket.close()
+#    print ("UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ "+ i)
+
+in the end the above script finally worked and the correct port withe password was 5669 with password uNG9O58gUE7snukf3bvZ0rxhtnjzSGzG... i looked up online but what made it not work for me was i was missing line 532 and i was using line once i added that line and tookout the while loop and left a black space in passwod in the previous password for whitspace in the end. to figure those out i went and looked online and im a little ashamed of that..i couldhave done by myself but with more ime.. andother way and slower is the bash script
+
+for $i in(0000...9999)
+nc localhost 30002 ...
+
+incompleted
+bandit 24->25
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Level Goal
+
+Logging in to bandit26 from bandit25 should be fairly easy… The shell for user bandit26 is not /bin/bash, but something else. Find out what it is, how it works and how to break out of it.
+
+Commands you may need to solve this level
+
+ssh, cat, more, vi, ls, id, pwd
+
+first if we ls ./ we see "bandit26.sshkey"
+se we ssh - i ./bandit26.sshkey bandit26@localhost
+
+it logs in and logs us out.
+
+fnding what bash is usede in this level we do getend passwd | grep bandit26
+or /etc/passwd | grep bandit26
+
+we find " /usr/bin/showtext.sh
+
+cat /usr/bin/showtext.sh
+"#!/bin/sh
+
+more ~/text.txt
+exit 0
+"
+
+if we try to execute ssh -i bandit26.sshkey bandit26@localhost -t "cat ~/text.txt" but that doesnt work.. and I got stuck here and went online for hints and the trick was to resize the ssh window to get the more function. when you ssh -i bandit.sshkey bandit26@localhost
+
+then pressing 'v' will take you into interactive shell vi window where you can use ":r" to read a file and insert it in the vi shell..
+:r /etc/bandit_pass/bandit26 and we get the passwd for level bandit 26
+
+5czgV9L3Xx8JPOyRbXh6lQbmIOWvPT6Z
+
+bandit25->26
+----------------------------------------------------------------
+
+
+At this point there is not LEVEL bandit 26 -> 27
+ and from this point on Im off to leviathan WARGAME
+
+
+
+ ``````````````````````````````````````````````````
+
+ leviathan0
+
+ we ssh leviathan0@leviathan.labs.overthewire.org
+ password is given as leviathan0
+
+ we are connected we ls -l
+ we are not given any tips or information to find where the password file is...
+ so we search
+
+ " ls -la"
+
+there is a ./backup/ folder with bookmark.html inside
+
+if we grep -r levithan1 in bookmark.html
+we find it ... -> rioGegei8m
+
+levi01->02
+--------------------------------------------------------------
+
+This level was challenging, we have an exec file ./check that promprts to enter the password, if passwd is incorrect we get " wrong passwd, goodbye"
+
+using
+strings ./check we see a bunch of static libs and some words like D$love, and secrf, trying those words still gives us wrong passwd.. s
+
+looking online I found we can use ltrace  is  a  program that simply runs the specified command until it exits.  It intercepts and records the dynamic library calls which are called by the executed process and the signals which are received by that process.  It can also intercept and print the  system  calls  exe-  cuted by the program.
+so ltrace ./check
+we get a shell to enter a three chars that is strcmp with the correct passwrd which was "sex"
+ then we get a shell to get the password
+
+so cat /etc/leviathan_pass/levithan2
+ougahZi8Ta
+
+levi2->3
+ this level was alos challenge for me , it seems I keep hitting a platenu for on each level now and its getting harder to think of workarounds.. leaving me with no choice but the run on the internet for answer or hints
+
+

