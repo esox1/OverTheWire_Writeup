@@ -1,5 +1,7 @@
+Bandit
+
 Bandit0 we are given the passwd which is bandit0
-##Bandit Level 0 → Level 1
+**Bandit Level 0 → Level 1**
 //add bandit0.png
 Level Goal
 
@@ -7,7 +9,7 @@ The password for the next level is stored in a file called readme located in the
 
 //add bandit1.png
 
-##Bandit Level 1 → Level 2
+**Bandit Level 1 → Level 2**
 
 Level Goal
 
@@ -15,7 +17,7 @@ The password for the next level is stored in a file called - located in the home
 
 //add bandit2.png
 
-##Bandit Level 2 → Level 3
+**Bandit Level 2 → Level 3**
 
 Level Goal
 
@@ -27,7 +29,7 @@ The password for the next level is stored in a file called spaces in this filena
 cat inhere/.hidden
 
 
-##Bandit Level 4 → Level 5
+**Bandit Level 4 → Level 5**
 
 Level Goal
 
@@ -43,7 +45,7 @@ file ./*
 //add bandit4
 
 
-##Bandit Level 5 → Level 6
+**Bandit Level 5 → Level 6**
 
 Level Goal
 
@@ -67,7 +69,7 @@ find . -size 1033c -readable ! executable -exec file {} + | grep ASCII
 using find to determine the size 1033 bytes and not executable and tagging file cmd and piping grep with ASCII
 //add bandit5.png
 
-##Bandit Level 6 → Level 7
+**Bandit Level 6 → Level 7**
 
 Level Goal
 
@@ -85,7 +87,7 @@ find / -type f -group bandit6 -user bandit7 -size 33c
 
 //add bandit6.png
 
-##Bandit Level 7 → Level 8
+**Bandit Level 7 → Level 8**
 
 Level Goal
 
@@ -95,7 +97,7 @@ For this one we can use grep to find the word millionth in data.txt
 
 //add bandit7.png
 
-##Bandit Level 8 → Level 9
+**Bandit Level 8 → Level 9**
 
 Level Goal
 
@@ -107,7 +109,7 @@ the sort will sort lines in lexicographically order(it reorders them alpabatical
 //add bandit8.png
 
 
-##Bandit Level 9 → Level 10
+**Bandit Level 9 → Level 10**
 
 Level Goal
 
@@ -122,7 +124,7 @@ Another way is to use command "strings" whicih prints the printable characters s
 
 strings data.txt | grep ==
 
-##Bandit Level 10 → Level 11
+**Bandit Level 10 → Level 11**
 
 Level Goal
 
@@ -135,7 +137,7 @@ base64 is basically a binary datain a sequence of printable chars in plaintext e
 we use base64 command with -d flag to decode it to plain text
 base64 -d data.txt
 
-##Bandit Level 11 → Level 12
+**Bandit Level 11 → Level 12**
 
 Level Goal
 
@@ -157,7 +159,7 @@ cat data.txt | tr 'a-zA-Z' 'n-za-mN-ZA-M'
 ex: echo "LOVEEGYPT" | tr 'a-zA-Z' 'n-za-mN-ZA-M' = YBIRRTLCG
 
 
-##Bandit Level 12 → Level 13
+**Bandit Level 12 → Level 13**
 
 Level Goal
 
