@@ -1,8 +1,10 @@
-Bandit
+## Bandit
 
-Bandit0 we are given the passwd which is bandit0
 **Bandit Level 0 → Level 1**
+Bandit0 we are given the passwd which is bandit0
+
 //add bandit0.png
+
 Level Goal
 
 The password for the next level is stored in a file called readme located in the home directory. Use this password to log into bandit1 using SSH. Whenever you find a password for a level, use SSH (on port 2220) to log into that level and continue the game.
@@ -25,8 +27,8 @@ The password for the next level is stored in a file called spaces in this filena
 
 //add bandit3.png
 
-"ls -a" to see ".hidden files/folders"
-cat inhere/.hidden
+``` "ls -a" to see ".hidden files/folders" 
+cat inhere/.hidden ```
 
 
 **Bandit Level 4 → Level 5**
@@ -35,12 +37,14 @@ Level Goal
 
 The password for the next level is stored in the only human-readable file in the inhere directory. Tip: if your terminal is messed up, try the “reset” command.
 
-cd ./inhere/
+` cd ./inhere/ `
 "theres a bunch of file0, file1, etc..with giberrish .except one.
-find . -exec file {} + | grep ASCII #find with exec command file with result subsitute with {} and + to tell find it is the end of cmd
+` find . -exec file {} + | grep ASCII ` 
+**#find with exec command file with result subsitute with {} and + to tell find it is the end of cmd**
 
 Another way is to use "file" to see type
-file ./*
+
+` file ./* `
 
 //add bandit4
 
@@ -57,14 +61,16 @@ not executable
 
 In this level we get a bunch of folders with a bunch of different files and given conditions:
 human-readable, 1033 bytes in size, not executable
-cd /inhere/
-du -ba | grep 1033
-we read all subdir and get the block(bytes)size and piped with grep to find our 1033 size
+> cd /inhere/
+> du -ba | grep 1033
+
+**we read all subdir and get the block(bytes)size and piped with grep to find our 1033 size**
 
 //add bandit5.png
 
 Another way is to use the find tool
-find . -size 1033c -readable ! executable -exec file {} + | grep ASCII
+
+> find . -size 1033c -readable ! executable -exec file {} + | grep ASCII
 
 using find to determine the size 1033 bytes and not executable and tagging file cmd and piping grep with ASCII
 //add bandit5.png
