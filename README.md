@@ -1,6 +1,6 @@
-## Bandit
+# Bandit
 
-**Bandit Level 0 → Level 1**
+### **Bandit Level 0 → Level 1**
 Bandit0 we are given the passwd which is bandit0
 
 //add bandit0.png
@@ -11,7 +11,7 @@ The password for the next level is stored in a file called readme located in the
 
 //add bandit1.png
 
-**Bandit Level 1 → Level 2**
+### **Bandit Level 1 → Level 2**
 
 Level Goal
 
@@ -19,7 +19,7 @@ The password for the next level is stored in a file called - located in the home
 
 //add bandit2.png
 
-**Bandit Level 2 → Level 3**
+### **Bandit Level 2 → Level 3**
 
 Level Goal
 
@@ -28,21 +28,24 @@ The password for the next level is stored in a file called spaces in this filena
 //add bandit3.png
 
 ``` "ls -a" to see ".hidden files/folders" 
-cat inhere/.hidden ```
+cat inhere/.hidden 
+```
 
 
-**Bandit Level 4 → Level 5**
+### **Bandit Level 4 → Level 5**
 
 Level Goal
 
 The password for the next level is stored in the only human-readable file in the inhere directory. Tip: if your terminal is messed up, try the “reset” command.
 
-` cd ./inhere/ `
-"theres a bunch of file0, file1, etc..with giberrish .except one.
-` find . -exec file {} + | grep ASCII ` 
-**#find with exec command file with result subsitute with {} and + to tell find it is the end of cmd**
+` cd ./inhere/
+`
+"theres a bunch of file0, file1, etc..with giberrish .except one"
+` find . -exec file {} + | grep ASCII `
 
-Another way is to use "file" to see type
+**find with exec command file with result subsitute with {} and + to tell find it is the end of cmd**
+
+Another way is to use **"file"** to see type
 
 ` file ./* `
 
@@ -61,8 +64,8 @@ not executable
 
 In this level we get a bunch of folders with a bunch of different files and given conditions:
 human-readable, 1033 bytes in size, not executable
-> cd /inhere/
-> du -ba | grep 1033
+` **cd /inhere/** `
+` **du -ba | grep 1033**`
 
 **we read all subdir and get the block(bytes)size and piped with grep to find our 1033 size**
 
@@ -70,7 +73,7 @@ human-readable, 1033 bytes in size, not executable
 
 Another way is to use the find tool
 
-> find . -size 1033c -readable ! executable -exec file {} + | grep ASCII
+` find . -size 1033c -readable ! executable -exec file {} + | grep ASCII`
 
 using find to determine the size 1033 bytes and not executable and tagging file cmd and piping grep with ASCII
 //add bandit5.png
@@ -140,8 +143,8 @@ The password for the next level is stored in the file data.txt, which contains b
 
 base64 is basically a binary datain a sequence of printable chars in plaintext encoded in an ASCII string format
 
-we use base64 command with -d flag to decode it to plain text
-base64 -d data.txt
+**we use base64 command with -d flag to decode it to plain text**
+` base64 -d data.txt`
 
 **Bandit Level 11 → Level 12**
 
