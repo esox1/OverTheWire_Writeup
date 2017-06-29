@@ -4,6 +4,7 @@
 Bandit0 we are given the passwd which is bandit0
 
 //add bandit0.png
+ OverTheWire_Writeup/bandit-scrshots/bandit0.png 
 
 Level Goal
 
