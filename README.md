@@ -200,7 +200,7 @@ and I repeat the same steps from there on..
 
 I start using **file** and **mv** to move to the next file until I hit the password file.
 
-//add bandit12b.png
+![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit12b.png)
 
 
 ### **Bandit Level 13 → Level 14**
@@ -211,79 +211,71 @@ I start using **file** and **mv** to move to the next file until I hit the passw
 So we are given the ssh private key to level 14. We connect to bandit14@localhost using the given privatekey in bandit13
 With **ssh** and it **i** flag we can connect to level 14
 
-``ssh -i ./ssh.key_private bandit14@localhost``
+`ssh -i ./ssh.key_private bandit14@localhost`
 
-//add bandit13
+![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit13.png)
 
 
 Bandit Level 14 → Level 15
 
 **Level Goal**
 >The password for the next level can be retrieved by submitting the password of the current level to port 30000 on localhost.
-where the passwd for level 14 was saved in /etc/bandit_pass/bandit14
+where the passwd for level 14 was saved in **/etc/bandit_pass/bandit14**
 
 cat /above/directory to get bandit14 passwd.
 
-To get the passwd to level15
-condition: the passwd can be retrieved by sumbitting the passwd of the current level to port 30000 on localhost
+To get the passwd to level15. The passwd can be retrieved by sumbitting the passwd of the current level to port 30000 on localhost
 
-I had to look this one up
 so you can listen to a running service using **nc** or **telnet** commands
 `nc localhost 30000`
 which didnt work for me but telnet did
 
 `telnet localhost 30000`
 
-//add bandit14.png
-then it awaits for you to enter bandit14 password to give you a surprise
+![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit14.png)
 
-Bandit Level 15 → Level 16
+then it awaits for you to enter bandit14 password to give you a surprise ::smile::
 
-Level Goal
+### **Bandit Level 15 → Level 16**
 
-The password for the next level can be retrieved by submitting the password of the current level to port 30001 on localhost using SSL encryption.
+**Level Goal**
+>The password for the next level can be retrieved by submitting the password of the current level to port 30001 on localhost using SSL encryption.
 
-Helpful note: Getting “HEARTBEATING” and “Read R BLOCK”? Use -ign_eof and read the “CONNECTED COMMANDS” section in the manpage. Next to ‘R’ and ‘Q’, the ‘B’ command also works in this version of that command…
+>Helpful note: Getting “HEARTBEATING” and “Read R BLOCK”? Use -ign_eof and read the “CONNECTED COMMANDS” section in the manpage. Next to ‘R’ and ‘Q’, the ‘B’ command also works in this version of that command…
 
 This level the credentials can be retrieved by submitting the password of the current level to a port 30001 on localhost using ssl encryption
 
 `telent localhost 30001`
 
-
 then entering the passwd to current level
-I get an ERROR 140737354049184:ssl routines ssl3_get_record:wrong version number
+I got an **ERROR 140737354049184:ssl routines ssl3_get_record:wrong version number**
 
-Here's what I learned after googling online about ssl. if we wanted to test a webiste by sending a custom hearder, but say websites uses **https** if we used
-telnet www.example 80
-GET /index.html
+Here's what I learned after googling online about ssl. if we wanted to test a webiste by sending a custom hearder, but say websites uses **https** if we used `telnet www.example:80`
+**GET /index.html**
 that would be a valid HTTP GET and you would see the servers response headers and response data. but with a ssl webiste that wont work. We use **openssl s_client**
 
 `openssl s_client -connect localhost:30001`
-and it's unsccessful. >I get servers response headers and response data then its waiting to enter the passwd of the current level (bandit15)  but I get
 
-"HEARTBEATING
+Howeverm it didn't work. I got servers response headers and response data then its waiting to enter the passwd of the current level (bandit15)  but I get
+
+>**"HEARTBEATING
  read R BLOCK
- read:errno=0"
+ read:errno=0"**
 
-//add bandit15a.png
-//add bandit15b.png
+![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit15a.png)
+![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit15b.png)
 
- according to otw
- using the **-quiet** flag wich implies -ign_eof we get our passwd for bandit16
+ According to otw -> >using the **-quiet** flag wich implies -ign_eof we get our passwd for bandit16
 
-//add bandit15c.png
-
+![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit15c.png)
 
 
-Bandit Level 16 → Level 17
+### **Bandit Level 16 → Level 17**
 
-Level Goal
+**Level Goal**
+>The credentials for the next level can be retrieved by submitting the password of the current level to a port on localhost in the range 31000 to 32000. First find out which of these ports have a server listening on them. Then find out which of those speak SSL and which don’t. There is only 1 server that will give the next credentials, the others will simply send back to you whatever you send to it.
 
-The credentials for the next level can be retrieved by submitting the password of the current level to a port on localhost in the range 31000 to 32000. First find out which of these ports have a server listening on them. Then find out which of those speak SSL and which don’t. There is only 1 server that will give the next credentials, the others will simply send back to you whatever you send to it.
-
-We get a range of ports that we need to scan to see which ones the server is listening to and test which ones are ssl
-
-A very helpful network thats widely used in scanning open ports on systems is **nmap**
+First We need to get a range of ports that we need to scan to see which ones the server is listening to and test which ones are ssl. There is a very helpful network thats widely used in scanning open ports on systems named **nmap**
 
 `nmap -p31000-32000 localhost`
 
@@ -293,10 +285,14 @@ We see that 31046/tcp open
  31790/tcp open
  31960/tcp open
 
-//add bandit16a.png
+![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit16a.png)
 
-We can use echo test | nc -v localhost 31046
- "test"
+We can send a string and see which ones replies back with an ssl error and which one doesn't.
+
+`echo test | nc -v localhost 31046`
+
+![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit16b.png)
+
  31518 = ERROR
  31691 = test
  31790 = ERROR
@@ -304,16 +300,13 @@ We can use echo test | nc -v localhost 31046
 
  so only 31518 and 31790 are ssl
 
-
-//add bandit16b.png
-
-
 Using `openssl s_client -connect localhost:31790`
 
-then entering the paswd to current level we get the private key to the next level
+then entering the paswd to current level we get an **RSA private key** to the next level
 
 create a directory in /tmp/any/name/ and save  the private key  displayed in file, name it whatever
-mkdir /tmp/any/name/
+
+`mkdir /tmp/any/name/`
 
 `vim /tmp/es/private.key` & paste the private key in private.key
 
@@ -329,5 +322,4 @@ once we in bandit17 we can find the passwd for this level in
 
 >/etc/bandit_passwd/bandit17
 
-
-
+SUCCESS!!
