@@ -1,34 +1,38 @@
 # Bandit
 
 ### **Bandit Level 0 → Level 1**
+
+**Level Goal**
+>The password for the next level is stored in a file called readme located in the home directory. Use this password to log into bandit1 using SSH. Whenever you find a password for a level, use SSH (on port 2220) to log into that level and continue the game.
+
+
 In Bandit0 we are given the passwd to bandit0 which is bandit0
 ![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit0.png)
 
 
->Level Goal
 
->The password for the next level is stored in a file called readme located in the home directory. Use this password to log into >bandit1 using SSH. Whenever you find a password for a level, use SSH (on port 2220) to log into that level and continue the game.
+### **Bandit Level 1 → Level 2**
+
+**Level Goal**
+>The password for the next level is stored in a file called - located in the home directory
 
 ![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit1.png)
 
 
-### **Bandit Level 1 → Level 2**
+### **Bandit Level 2 → Level 3**
 
->Level Goal
-
->The password for the next level is stored in a file called - located in the home directory
+**Level Goal**
+>The password for the next level is stored in a file called spaces in this filename located in the home directory
 
 ![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit2.png)
 
 
-### **Bandit Level 2 → Level 3**
+### **Bandit Level 3 → Level 4**
 
->Level Goal
-
->The password for the next level is stored in a file called spaces in this filename located in the home directory
+**Level Goal**
+>The password for the next level is stored in a hidden file in the inhere directory.
 
 ![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit3.png)
-
 
 ``` "ls -a" to see ".hidden files/folders" 
 cat inhere/.hidden 
@@ -36,40 +40,37 @@ cat inhere/.hidden
 
 ### **Bandit Level 4 → Level 5**
 
->Level Goal
-
->The password for the next level is stored in the only human-readable file in the inhere directory. Tip: if your terminal is >messed up, try the “reset” command.
+**Level Goal**
+>The password for the next level is stored in the only human-readable file in the inhere directory. Tip: if your terminal is messed up, try the “reset” command.
 
 ` cd ./inhere/
 `
-"theres a bunch of file0, file1, etc..with giberrish .except one"
+We find a bunch of file0, file1, etc..with giberrish, except one
 
 ` find . -exec file {} + | grep ASCII `
 
-**find with exec command file with result subsitute with {} and + to tell find it is the end of cmd**
+The **find** with **exec** flag to execute **file** with result subsitute with **{}** and **+** to tell "find" that it is the end of cmd
 
 Another way is to use **"file"** to see type
 
-` file ./* 
+` file ./* `
 
-![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit4.png)`
+![alt text](https://github.com/esox1/OverTheWire_Writeup/blob/master/bandit-scrshots/bandit4.png)
 
 
 ### **Bandit Level 5 → Level 6**
 
->Level Goal
-
->The password for the next level is stored in a file somewhere under the inhere directory and has all of the following >properties:
-
+**Level Goal**
+>The password for the next level is stored in a file somewhere under the inhere directory and has all of the following properties:
 >human-readable
 >1033 bytes in size
 >not executable
 
 In this level we get a bunch of folders with a bunch of different files and given conditions:
-human-readable, 1033 bytes in size, not executable
+**human-readable, 1033 bytes in size, not executable**
 
 ` **cd /inhere/** `
-` **du -ba | grep 1033**`
+` **du -ba | grep 1033** `
 
 **we read all subdir and get the block(bytes)size and piped with grep to find our 1033 size**
 
@@ -81,7 +82,7 @@ Another way is to use the find tool
 
 ` find . -size 1033c -readable ! executable -exec file {} + | grep ASCII`
 
-**using find to determine the size 1033 bytes and not executable and tagging file cmd and piping grep with ASCII**
+ find can be used to determine the **size**, 1033 bytes, and not executable aloing with tagging **file** cmd and piping **grep** to search for ASCII
 
 
 
